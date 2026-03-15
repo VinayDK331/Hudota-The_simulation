@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HuDota - Online Flower Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* New Attractive CSS (Royal Purple Theme with Gradient Background) */
+        :root {
+            --primary-color: #6B46C1; /* Royal Purple */
+            --secondary-color: #4299e1; /* Clear Blue (Secondary action color retained) */
+            --accent-color: #f6e05e; /* Gold/Yellow for highlights */
+            --text-dark: #2d3748;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            /* Vibrant Gradient Background */
+            background-image: linear-gradient(135deg, #a777e3 0%, #d49ce3 50%, #f7c9e3 100%);
+            background-attachment: fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+
+        /* Header and Buttons */
+        header {
+            text-align: center;
+            padding-bottom: 25px;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        header h1 {
+            font-size: 3.2em;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #flower-icon {
+            color: var(--accent-color);
+            margin-right: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        .dashboard-header h2 {
+            font-size: 1.8em;
+            color: var(--text-dark);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .primary-btn:hover { 
+            background-color: #5534a7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(107, 70, 193, 0.4);
+        }
+
+        .secondary-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .secondary-btn:hover { 
+            background-color: #3182ce; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(66, 153, 225, 0.4);
+        }
+
+        /* Forms and Inputs */
+        input:not([type="file"]):not([type="checkbox"]), select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            background-color: #fefefe;
+            transition: border-color 0.3s;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 0;
+            margin-bottom: 15px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* --- LOGIN PAGE --- */
+        #login-view { text-align: center; }
+        .account-selection {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .account-btn {
+            width: 200px;
+            padding: 20px;
+            font-size: 1.2em;
+            border: 2px solid var(--primary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .account-btn.active, .account-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+        .login-form-area {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            background-color: #f0f4f8;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .form-switch { margin-top: 20px; font-size: 1em; }
+        .form-switch a { color: var(--secondary-color); font-weight: 600; text-decoration: none; }
+
+        /* --- SELLER PAGE --- */
+        #seller-view { padding: 0 10px; }
+        .listing-form {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            text-align: left;
+        }
+        #current-listings {
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            min-height: 100px;
+            align-items: flex-start;
+        }
+        .no-listings-msg {
+            font-style: italic;
+            color: #a0aec0;
+            padding: 30px;
+        }
+        .flower-card {
+            width: 280px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.2s;
+        }
+        .flower-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        .flower-card-img {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #718096;
+            background-color: #ebf8ff;
+        }
+        .card-details {
+            padding: 15px;
+        }
+        .card-details h3 { color: var(--primary-color); margin-bottom: 5px; }
+        .card-details p { margin: 5px 0; font-size: 0.95em; }
+        .price-tag { font-weight: bold; color: var(--secondary-color); font-size: 1.2em; }
+
+
+        /* --- BUYER PAGE --- */
+        #buyer-view { padding: 0 10px; }
+        .buyer-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
+        }
+        .search-bar input { margin-bottom: 0; }
+        .search-bar button { width: 120px; }
+        
+        #flower-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .flower-post {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .flower-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.1);
+        }
+        .post-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #718096;
+            background-color: #e6fffa;
+        }
+        .post-details { padding: 20px; }
+        .post-details h3 { margin-bottom: 8px; color: var(--primary-color); }
+        .post-details .price { font-size: 1.2em; font-weight: 700; margin: 10px 0 15px 0; color: var(--secondary-color);}
+        .buy-btn { width: 100%; font-size: 1.1em; }
+
+
+        /* --- CHECKOUT/CONFIRMATION PAGES --- */
+        #checkout-view, #confirmation-view {
+            max-width: 550px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #checkout-view form {
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            background-color: #f7fafc;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .cost-summary {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            background-color: #f0fff4;
+            text-align: right;
+            font-size: 1.1em;
+        }
+        .total-cost { font-size: 1.8em; color: var(--primary-color); margin-top: 15px; }
+
+        /* Confirmation */
+        .success-box {
+            padding: 50px;
+            border-radius: 15px;
+            background-color: #ebf8ff;
+            box-shadow: var(--shadow);
+            margin-top: 50px;
+            border: 1px solid #bee3f8;
+        }
+        .check-icon {
+            font-size: 5em;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            line-height: 1;
+        }
+        .success-box h2 { color: var(--primary-color); margin-bottom: 15px; font-size: 2em; }
+        .amount-paid { font-weight: 600; font-size: 1.2em; margin-bottom: 10px; }
+        .delivery-msg { color: #718096; margin-bottom: 40px; }
+
+        /* --- ORDER HISTORY VIEW --- */
+        #order-history-view {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .order-card {
+            background-color: #f0f4f8;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .order-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+        .order-card p {
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        .order-total {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--secondary-color);
+            margin-top: 10px;
+            border-top: 1px dashed #cbd5e0;
+            padding-top: 5px;
+        }
+        .no-orders-msg {
+            text-align: center;
+            font-style: italic;
+            color: #a0aec0;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="website-title">
+                <i id="flower-icon" class="fas fa-seedling"></i> 
+                HuDota Simulation 🌸🌸
+            </h1>
+        </header>
+
+        <main id="app-content">
+
+            <div id="login-view">
+                <h2>Welcome! Choose Your Account Type</h2>
+                <div class="account-selection">
+                    <button class="account-btn active" onclick="selectAccount('Buyer', event)">Buyer Account</button>
+                    <button class="account-btn" onclick="selectAccount('Seller', event)">Seller Account</button>
+                </div>
+
+                <div class="login-form-area">
+                    <h3 id="account-type-header">Log In as Buyer</h3>
+                    <form id="login-form">
+                        <input type="email" placeholder="Email Address" required>
+                        <input type="password" placeholder="Password" required>
+                        <button type="submit" class="primary-btn">Log In</button>
+                    </form>
+                    <p class="form-switch">Don't have an account? <a href="#" onclick="alert('Simulating Account Creation!')">Create a new account</a></p>
+                </div>
+            </div>
+
+            <div id="seller-view" class="hidden">
+                <div class="dashboard-header">
+                    <h2>Seller Dashboard</h2>
+                    <div class="buyer-buttons">
+                        <button class="secondary-btn" onclick="switchAccount()">Switch to Buyer</button>
+                        <button class="primary-btn" onclick="navigateTo('login-view')">Logout</button>
+                    </div>
+                </div>
+                <hr style="border-color: #e2e8f0; margin-bottom: 30px;">
+                
+                <h3>Add New Flower Listing</h3>
+                <form class="listing-form" onsubmit="handleListingSubmit(event)">
+                    <div style="display: flex; gap: 20px;">
+                        <div style="flex: 1;">
+                            <label for="flower-name">Flower Name:</label>
+                            <input type="text" id="flower-name" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="flower-price">Price Per Kg (Rs.):</label>
+                            <input type="number" id="flower-price" min="10" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <label for="flower-color">Available Colors (comma separated):</label>
+                    <input type="text" id="flower-color" placeholder="Red, White, Pink" required>
+                    
+                    <label for="flower-photo">Upload Photo:</label>
+                    <input type="file" id="flower-photo" accept="image/*" required style="margin-bottom: 20px;">
+                    
+                    <button type="submit" class="primary-btn" style="width: 100%;">List Flower</button>
+                </form>
+
+                <hr style="margin: 40px 0; border-color: #e2e8f0;">
+                
+                <h3>Your Listings</h3>
+                <div id="current-listings">
+                    </div>
+            </div>
+
+            <div id="buyer-view" class="hidden">
+                <div class="dashboard-header">
+                    <h2>Flower Market</h2>
+                    <div class="buyer-buttons">
+                        <button class="secondary-btn" onclick="renderOrderHistory()">View Orders</button>
+                        <button class="secondary-btn" onclick="switchAccount()">Switch to Seller</button>
+                        <button class="primary-btn" onclick="navigateTo('login-view')">Logout</button>
+                    </div>
+                </div>
+                <hr style="border-color: #e2e8f0; margin-bottom: 30px;">
+
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search flowers by name or color..." onkeyup="searchFlowers(false)">
+                    <button class="primary-btn" onclick="searchFlowers(true)">Search</button>
+                </div>
+
+                <div id="flower-grid">
+                </div>
+            </div>
+
+            <div id="order-history-view" class="hidden">
+                <div class="dashboard-header">
+                    <h2>Your Order History</h2>
+                    <button class="secondary-btn" onclick="navigateTo('buyer-view')">Back to Market</button>
+                </div>
+                <hr style="border-color: #e2e8f0; margin-bottom: 30px;">
+                <div id="orders-list">
+                    </div>
+            </div>
+
+
+            <div id="checkout-view" class="hidden">
+                <h2>Order: <span id="checkout-flower-name"></span></h2>
+                <form onsubmit="calculateCost(event)">
+                    <input type="hidden" id="checkout-price-per-kg">
+                    <input type="hidden" id="checkout-selected-id">
+                    
+                    <div class="form-group">
+                        <label for="selected-color">Select Color:</label>
+                        <select id="selected-color" required onchange="calculateCost(event)">
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity-kg">Quantity (in Kg):</label>
+                        <input type="number" id="quantity-kg" value="1" min="0.5" step="0.5" required oninput="calculateCost(event)">
+                    </div>
+                    
+                    <div class="cost-summary">
+                        <p>Price per Kg: Rs. <span id="summary-price"></span></p>
+                        <p>Weight: <span id="summary-weight">1</span> Kg</p>
+                        <h3 class="total-cost">Full Cost: Rs. <span id="summary-total">0.00</span></h3>
+                    </div>
+                    
+                    <button type="submit" class="secondary-btn" id="pay-button">Pay Rs. 0.00</button>
+                </form>
+                <button class="primary-btn" style="margin-top: 20px;" onclick="navigateTo('buyer-view')">Cancel / Back to Shop</button>
+            </div>
+
+            <div id="confirmation-view" class="hidden">
+                <div class="success-box">
+                    <div class="check-icon" style="color: var(--primary-color);">✔</div>
+                    <h2>Payment Successful!</h2>
+                    <p class="amount-paid">Amount Paid: **Rs. <span id="confirmed-amount"></span>**</p>
+                    <p class="delivery-msg">Your parcel will reach your home in the morning.</p>
+                    <button class="primary-btn" onclick="navigateTo('buyer-view')">Continue Shopping</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- DATA SIMULATION ---
+        let currentView = 'login-view';
+        let accountType = 'Buyer';
+        let nextId = 11; 
+        
+        let orderHistory = []; 
+        let orderIdCounter = 1;
+        
+        let inventory = [
+            // ------------------------------------------------------------------------------------------
+            // 🟢 CORRECTED: Image paths are now set to use simple filenames.
+            // 🟢 MAKE SURE: Your p1.jpg to p10.jpg files are in the same folder as this HTML file!
+            // ------------------------------------------------------------------------------------------
+            
+            { id: 1, name: 'Red Rose', colors: 'Red, White, Yellow', price: 250.00, image: 'p1.jpg', isSellerListing: false },
+            { id: 2, name: 'Yellow Lily', colors: 'Yellow, Cream', price: 380.50, image: 'p2.jpg', isSellerListing: false },
+            { id: 3, name: 'Pink Tulip', colors: 'Pink, Purple, Red', price: 450.00, image: 'p3.jpg', isSellerListing: false },
+            { id: 4, name: 'White Jasmine', colors: 'White', price: 180.75, image: 'p4.jpg', isSellerListing: false },
+            { id: 5, name: 'Blue Daisy', colors: 'Blue, White', price: 300.99, image: 'p5.jpg', isSellerListing: false },
+            { id: 6, name: 'Orange Marigold', colors: 'Orange, Yellow', price: 150.00, image: 'p6.jpg', isSellerListing: false },
+            { id: 7, name: 'Violet Orchid', colors: 'Violet, White, Pink', price: 620.00, image: 'p7.jpg', isSellerListing: false },
+            { id: 8, name: 'Crimson Carnation', colors: 'Crimson, Red, Yellow', price: 280.50, image: 'p8.jpg', isSellerListing: false },
+            { id: 9, name: 'Green Chrysanthemum', colors: 'Green, Yellow', price: 410.00, image: 'p9.jpg', isSellerListing: false },
+            { id: 10, name: 'Peach Peony', colors: 'Peach, Pink', price: 550.00, image: 'p10.jpg', isSellerListing: false }
+        ];
+
+        // --- NAVIGATION & VIEW MANAGEMENT ---
+        function navigateTo(viewId) {
+            document.getElementById(currentView).classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+            currentView = viewId;
+            document.getElementById('website-title').innerHTML = `<i id="flower-icon" class="fas fa-seedling"></i> HuDota`;
+
+            if (viewId === 'seller-view') {
+                renderSellerListings();
+            } else if (viewId === 'buyer-view') {
+                renderBuyerGrid(inventory);
+            }
+        }
+
+        function selectAccount(type, event) {
+            accountType = type;
+            document.getElementById('account-type-header').innerText = `Log In as ${type}`;
+
+            document.querySelectorAll('.account-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        function switchAccount() {
+            if (accountType === 'Buyer') {
+                accountType = 'Seller';
+                navigateTo('seller-view');
+            } else {
+                accountType = 'Buyer';
+                navigateTo('buyer-view');
+            }
+        }
+
+        // --- LOGIN LOGIC ---
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert(`Logging in as ${accountType}... (Simulated Success)`);
+            
+            if (accountType === 'Seller') {
+                navigateTo('seller-view');
+            } else { // Buyer
+                navigateTo('buyer-view');
+            }
+        });
+
+        // --- SELLER LOGIC (for dynamically added listings) ---
+        function handleListingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('flower-name').value.trim();
+            const price = parseFloat(document.getElementById('flower-price').value.trim());
+            const colors = document.getElementById('flower-color').value.trim();
+            const fileInput = document.getElementById('flower-photo');
+            
+            if (!name || isNaN(price) || !colors || !fileInput.files.length) {
+                alert("Please fill out all required fields and select a file.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            // Use FileReader to create a Data URL for user-uploaded images (This is necessary because we can't predict their local path)
+            reader.onload = function(e) {
+                const imageDataUrl = e.target.result;
+                addListing(name, price.toFixed(2), colors, imageDataUrl);
+                e.target.closest('form').reset();
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function addListing(name, price, colors, image) {
+            const newFlower = { 
+                id: nextId++, 
+                name: name, 
+                colors: colors, 
+                price: price, 
+                image: image,
+                isSellerListing: true
+            };
+            inventory.push(newFlower);
+            
+            alert(`Successfully listed: ${name} at Rs. ${price}/Kg! The image has been loaded locally.`);
+            renderSellerListings();
+        }
+
+        function renderSellerListings() {
+            const container = document.getElementById('current-listings');
+            // Filter inventory to only show items explicitly marked as seller's own or items added via the form (which have data URLs)
+            const sellerListings = inventory.filter(flower => flower.isSellerListing === true || flower.image.startsWith('data:image'));
+
+            if (sellerListings.length === 0) {
+                container.innerHTML = `<p class="no-listings-msg">You have not uploaded any listings yet. Use the form above to get started!</p>`;
+                return;
+            }
+
+            container.innerHTML = sellerListings.map(flower => `
+                <div class="flower-card">
+                    <div class="flower-card-img" style="background-image: url('${flower.image}');">
+                        ${flower.image.startsWith('p') ? '' : ''}
+                    </div>
+                    <div class="card-details">
+                        <h3>${flower.name}</h3>
+                        <p>Colors: ${flower.colors}</p>
+                        <p class="price-tag">Rs. ${parseFloat(flower.price).toFixed(2)} / Kg</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- BUYER LOGIC (Market Grid) ---
+        function renderBuyerGrid(flowers) {
+            const grid = document.getElementById('flower-grid');
+            grid.innerHTML = flowers.map(flower => {
+                const imageSource = flower.image; 
+                
+                return `
+                <div class="flower-post">
+                    <div class="post-image" style="background-image: url('${imageSource}');">
+                        ${!imageSource.startsWith('p') && !imageSource.startsWith('data:image') ? `[Missing image file: ${flower.image}]` : ''}
+                    </div>
+                    <div class="post-details">
+                        <h3>${flower.name}</h3>
+                        <p>Colors available: ${flower.colors}</p>
+                        <p class="price">Rs. ${parseFloat(flower.price).toFixed(2)} / Kg</p>
+                        <button class="secondary-btn buy-btn" onclick="startCheckout(${flower.id})">BUY NOW</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+        
+        function searchFlowers(showAlert = true) {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = inventory.filter(flower => 
+                flower.name.toLowerCase().includes(query) || flower.colors.toLowerCase().includes(query)
+            );
+            renderBuyerGrid(filtered);
+            if (showAlert) {
+                alert(`Showing ${filtered.length} result(s) for "${query}"`);
+            }
+        }
+
+        // --- ORDER HISTORY LOGIC ---
+
+        function renderOrderHistory() {
+            navigateTo('order-history-view');
+            const list = document.getElementById('orders-list');
+
+            if (orderHistory.length === 0) {
+                list.innerHTML = `<p class="no-orders-msg">You haven't placed any orders yet. Time to start shopping!</p>`;
+                return;
+            }
+
+            list.innerHTML = orderHistory.map(order => `
+                <div class="order-card">
+                    <h4>Order #${order.orderId} - ${order.name} (${order.color})</h4>
+                    <p>Price per Kg: Rs. ${order.pricePerKg}</p>
+                    <p>Quantity: ${order.weight} Kg</p>
+                    <div class="order-total">
+                        Total Paid: Rs. ${order.totalCost}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // --- CHECKOUT LOGIC ---
+        let selectedFlower = null;
+
+        function startCheckout(flowerId) {
+            selectedFlower = inventory.find(f => f.id === flowerId);
+            if (!selectedFlower) return;
+
+            // Populate Checkout View
+            document.getElementById('checkout-flower-name').innerText = selectedFlower.name;
+            document.getElementById('checkout-price-per-kg').value = selectedFlower.price;
+            document.getElementById('checkout-selected-id').value = selectedFlower.id;
+            document.getElementById('summary-price').innerText = parseFloat(selectedFlower.price).toFixed(2);
+
+            // Populate Color Dropdown
+            const colorSelect = document.getElementById('selected-color');
+            colorSelect.innerHTML = selectedFlower.colors.split(',').map(c => {
+                const color = c.trim();
+                return `<option value="${color}">${color}</option>`;
+            }).join('');
+
+            // Reset quantity and calculate initial cost
+            document.getElementById('quantity-kg').value = 1;
+            calculateCost({ preventDefault: () => {} }); 
+            
+            navigateTo('checkout-view');
+        }
+
+        function calculateCost(e) {
+            if (e && e.preventDefault && e.type !== 'submit') e.preventDefault();
+            
+            const price = parseFloat(document.getElementById('checkout-price-per-kg').value);
+            const weight = parseFloat(document.getElementById('quantity-kg').value);
+            
+            if (isNaN(price) || isNaN(weight) || weight <= 0) {
+                document.getElementById('summary-weight').innerText = 0;
+                document.getElementById('summary-total').innerText = '0.00';
+                document.getElementById('pay-button').innerText = 'Pay Rs. 0.00';
+                return;
+            }
+
+            const totalCost = (price * weight).toFixed(2);
+            
+            document.getElementById('summary-weight').innerText = weight;
+            document.getElementById('summary-total').innerText = totalCost;
+            document.getElementById('pay-button').innerText = `Pay Rs. ${totalCost}`;
+
+            if (e && e.type === 'submit') {
+                e.preventDefault(); 
+                finalizePayment(totalCost);
+            }
+        }
+
+        function finalizePayment(amount) {
+            // Get final details to save to history
+            const finalWeight = parseFloat(document.getElementById('quantity-kg').value);
+            const finalColor = document.getElementById('selected-color').value;
+
+            // 1. Save to Order History
+            orderHistory.push({
+                orderId: orderIdCounter++,
+                name: selectedFlower.name,
+                pricePerKg: selectedFlower.price,
+                color: finalColor,
+                weight: finalWeight,
+                totalCost: amount
+            });
+
+            // 2. Navigate to confirmation view
+            document.getElementById('confirmed-amount').innerText = amount;
+            navigateTo('confirmation-view');
+        }
+
+        // Initial render on load
+        document.addEventListener('DOMContentLoaded', () => {
+            selectAccount('Buyer', { target: document.querySelector('.account-btn') }); 
+            navigateTo('login-view');
+        });
+    </script>
+</body>
+</html>
